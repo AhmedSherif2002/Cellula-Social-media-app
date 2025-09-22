@@ -4,15 +4,15 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import BackwardButton from '@/components/BackwardButton'
 
-const Login:React.FC = () => {
+const Login: React.FC = () => {
 
     const [showEmail, setShowEmail] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const emailFocusHandler = (e: any) => setShowEmail(true);
-    const emailUnfocusHandler = (e: any) => setShowEmail(false); 
-    const passwordFocusHandler = (e: any) => setShowPassword(true);
-    const passwordUnfocusHandler = (e: any) => setShowPassword(false);
+    const emailFocusHandler = () => setShowEmail(true);
+    const emailUnfocusHandler = () => setShowEmail(false); 
+    const passwordFocusHandler = () => setShowPassword(true);
+    const passwordUnfocusHandler = () => setShowPassword(false);
 
     return (
     <div className='flex flex-col gap-13 m-4'>
@@ -48,7 +48,7 @@ const Login:React.FC = () => {
                 <span>Sign in with twitter</span>
             </div>
         </div>
-        <span className='text-sm text-gray-400 text-center'>Don't have account? Let's <Link href="signup" className='text-green-500 underline hover:text-green-600'>Sign up</Link></span>
+        <span className='text-sm text-gray-400 text-center'>Don&#39;t have account? Let&#39;s <Link href="signup" className='text-green-500 underline hover:text-green-600'>Sign up</Link></span>
     </div>
     )
 }

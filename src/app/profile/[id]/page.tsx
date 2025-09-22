@@ -1,4 +1,3 @@
-import BackwardButton from "@/components/BackwardButton"
 import SearchIcon from "@/components/SearchIcon"
 import Header from "@/components/Header"
 import Image from "next/image"
@@ -61,10 +60,9 @@ const Profile:React.FC = () => {
                     <span className="text-gray-400">Following</span>
                 </div>
             </div>
-            
         </div>
         <div className="py-15 px-5 w-full border-t-1 border-gray-300">
-            <div className="slider flex flex-row gap-5 overflow-x-auto w-full">
+            <div className="slider flex flex-row justify-center gap-5 overflow-x-auto w-full">
                 <div className="relative h-65 w-50 rounded-lg overflow-hidden flex-shrink-0">
                     <Image 
                         src={"/profile-picture.jpg"}

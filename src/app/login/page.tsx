@@ -1,10 +1,19 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { use, useRef, useState } from 'react'
 import Link from 'next/link'
 import BackwardButton from '@/components/BackwardButton'
+import { useDispatch, useSelector } from 'react-redux'
+import { login, logout } from '@/store/user/userSlice'
+import { appDispatch, RootState } from '@/store/store'
 
 const Login: React.FC = () => {
+
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
+    const dispatch = useDispatch<appDispatch>();
+    const user = useSelector((state: RootState) => state.user);
 
     const [showEmail, setShowEmail] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -14,25 +23,39 @@ const Login: React.FC = () => {
     const passwordFocusHandler = () => setShowPassword(true);
     const passwordUnfocusHandler = () => setShowPassword(false);
 
+    const handleLogin = () => {
+        const email = emailRef.current?.value;
+        const password = passwordRef.current?.value;
+        // Simulating login process
+        // Redux action -- just a simulation--
+        dispatch(login({
+            id: "1",
+            name: "John doe",
+            email: email || "",
+        }));
+        alert("logged in")
+        
+    }
+
     return (
     <div className='flex flex-col gap-13 m-4'>
         <BackwardButton/>
         <div className='flex flex-col justify-center items-center gap-1'>
-            <div className='text-5xl font-bold font-sans'>Hello Again!</div>
+            <div className='text-5xl font-bold font-sans'>Hello Again! {user.userInfo?.name || ""}</div>
             <div className='text-gray-500 font-sans'>Sign in to your account</div>
         </div>
         <div className='flex flex-col gap-4'>
             <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={emailFocusHandler} onBlur={emailUnfocusHandler}>
                 <label htmlFor="email" className={`text-green-500 font-sans ${showEmail ? "flex" : "hidden"}`}>Email address</label>
-                <input type="email" name='email' id='email' placeholder='Enter your email' className='outline-none' />
+                <input type="email" name='email' id='email' placeholder='Enter your email' className='outline-none' ref={emailRef}/>
             </div>
             <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={passwordFocusHandler} onBlur={passwordUnfocusHandler}>
                 <label htmlFor="password" className={`text-green-500 font-sans ${showPassword ? "flex" : "hidden"}`}>Password</label>
-                <input type="password" name='password' id='password' placeholder='Enter your password' className='outline-none' />
+                <input type="password" name='password' id='password' placeholder='Enter your password' className='outline-none' ref={passwordRef}/>
             </div>
             <Link className='text-green-500 underline hover:text-green-600 text-sm' href="">Forgot your password?</Link>
         </div>
-        <button className='bg-green-500 text-white p-5 rounded-md text-xl cursor-pointer hover:bg-green-600'>Sign in</button>
+        <button className='bg-green-500 text-white p-5 rounded-md text-xl cursor-pointer hover:bg-green-600' onClick={handleLogin}>Sign in</button>
         <div className='relative border-t-1 border-dashed border-gray-500 flex flex-col items-center gap-3'>
             <span className='-translate-y-1/2 bg-white px-2 text-gray-400 font-semibold'>Or with</span>
             <div className='flex flex-row justify-center items-center gap-2 border-1 border-gray-300 w-full p-5 rounded-md cursor-pointer'>

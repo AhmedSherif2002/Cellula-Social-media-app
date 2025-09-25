@@ -1,8 +1,25 @@
+"use client"
+
 import React from 'react'
 import Image from 'next/image'
+import { useSelector, UseSelector } from 'react-redux'
+import { UserState } from '@/store/user/userSlice';
+import Link from 'next/link';
+import { RootState } from '@/store/store';
 
 const Settings: React.FC = () => {
-  return (
+
+    const user = useSelector((state: RootState) => state.user.userInfo) as UserState["userInfo"];
+
+    console.log(user);
+
+    return !user ?
+        (
+        <div className='h-screen flex justify-center items-center'>
+            <Link className='text-white text-3xl bg-green-600 p-5 rounded-sm' href="/login">Login</Link>
+        </div>
+    ) :
+    (
     <div className='flex flex-col gap-10 min-h-screen'>
         <div className='header flex flex-row justify-between items-center border-b-1 border-gray-200 p-5'>
             <div className='profile flex flex-row flex-1 gap-5 items-center'>
@@ -15,7 +32,7 @@ const Settings: React.FC = () => {
                         />
                 </div>
                 <div className='flex flex-col'>
-                    <span className='font-semibold'>{"Ahmed"}</span>
+                    <span className='font-semibold'>{user?.name || "Ahmed"}</span>
                     <span className='text-sm text-gray-400'>@{"ahmed"}</span>
                 </div>
             </div>
@@ -100,7 +117,7 @@ const Settings: React.FC = () => {
             <button className='text-green-500 font-semibold font-sans bg-green-100 border-1 border-green-300 rounded-lg p-6'>Log Out</button>
         </div>
     </div>
-  )
+    )
 }
 
 export default Settings

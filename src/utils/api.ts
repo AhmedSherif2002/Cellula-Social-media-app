@@ -90,3 +90,17 @@ export const getPosts = async () => {
     const data = await res.json();
     return data;
 }
+
+export const likePost = async (userId: string, postId: string) => {
+    const res = await fetch(`http://127.0.0.1:8000/like-post?user_id=${userId}&post_id=${postId}`, {
+        method: "POST"
+    });
+    if(!res.ok) throw new Error("Failed to like post")
+}
+
+export const unlikePost = async (userId: string, postId: string) => {
+    const res = await fetch(`http://127.0.0.1:8000/delete-post-like?user_id=${userId}&post_id=${postId}`, {
+        method: "DELETE"
+    });
+    if(!res.ok) throw new Error("Failed to unlike post")
+}

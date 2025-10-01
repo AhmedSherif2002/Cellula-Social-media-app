@@ -1,9 +1,42 @@
+"use client"
+
 import SearchIcon from "@/components/SearchIcon"
 import Header from "@/components/Header"
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import { follow, getProfile } from "@/utils/api"
+import { ProfileData } from "@/types/User"
+import useUser from "@/hooks/useUser"
 
 const Profile:React.FC = () => {
+
+    const [profile, setProfile] = useState<ProfileData>();
+    const params = useParams()
+    const userId = params.id as string;
+    const { myId } = useUser()
+
+    const handleFollow = async () => {
+        try{   
+            await follow(myId, userId);
+        }catch(error){
+            console.log("failed to follow user");
+        }
+    }
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const profile = await getProfile(userId);
+            console.log(profile);
+            setProfile(profile);
+        }
+
+        fetchProfile();
+    }, [userId])
+
+    {if (!profile) return (<>Loading...</>)}
+
     return (
     <div className="flex flex-col gap-12 min-h-screen">
         <Header>
@@ -28,10 +61,10 @@ const Profile:React.FC = () => {
                 />
             </div>
             <div className="flex flex-col items-center gap-2">
-                <span className="font-sans font-semibold">Marshmello</span>
-                <span className="text-sm text-gray-400 font-sans">@marshmello</span>
+                <span className="font-sans font-semibold">{profile.name.split(" ")[0]}</span>
+                <span className="text-sm text-gray-400 font-sans">@{profile.name.split(" ")[0].toLowerCase()}</span>
             </div>
-            <div className="flex flex-row gap-4 cursor-pointer">
+            <div className={`flex-row gap-4 cursor-pointer ${parseInt(userId) === parseInt(myId) ? "hidden" : "flex"}`}>
                 <Link href="">  
                     <div className="message flex flex-row items-center border-1 border-gray-300 rounded-3xl py-2 px-5">
                         <div className="bg-green-500 w-2 h-2 rounded-full"></div>
@@ -44,19 +77,19 @@ const Profile:React.FC = () => {
                         <span className="text-gray-500">Message</span>
                     </div>
                 </Link>
-                <button className="bg-green-500 text-white px-5 py-2 rounded-3xl cursor-pointer">Follow</button>
+                <button className="bg-green-500 text-white px-5 py-2 rounded-3xl cursor-pointer" onClick={handleFollow}>Follow</button>
             </div>
             <div className="flex flex-row gap-5 sm:w-1/2 sm:justify-between items-center">
                 <div className="flex flex-col items-center border-1 border-gray-300 p-4 rounded-md w-25">
-                    <span className="text-2xl">6.3K</span>
+                    <span className="text-2xl">{profile.numberOfFollowers}</span>
                     <span className="text-gray-400">Followers</span>
                 </div>
                 <div className="flex flex-col items-center border-1 border-gray-300 p-4 rounded-md w-25">
-                    <span className="text-2xl">600</span>
+                    <span className="text-2xl">{profile.numberOfPosts}</span>
                     <span className="text-gray-400">Posts</span>
                 </div>
                 <div className="flex flex-col items-center border-1 border-gray-300 p-4 rounded-md w-25">
-                    <span className="text-2xl">2.3K</span>
+                    <span className="text-2xl">{profile.numberOfFollowings}</span>
                     <span className="text-gray-400">Following</span>
                 </div>
             </div>

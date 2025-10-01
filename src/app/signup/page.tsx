@@ -6,7 +6,7 @@ import BackwardButton from '@/components/BackwardButton'
 import { useDispatch, useSelector } from 'react-redux'
 import { login, logout } from '@/store/user/userSlice'
 import { appDispatch, RootState } from '@/store/store'
-import { signup } from '@/utils/api/signup'
+import { signup } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 
 const Signup: React.FC = () => {

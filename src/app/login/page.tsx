@@ -6,6 +6,8 @@ import BackwardButton from '@/components/BackwardButton'
 import { useDispatch, useSelector } from 'react-redux'
 import { login, logout } from '@/store/user/userSlice'
 import { appDispatch, RootState } from '@/store/store'
+import { signin } from '@/utils/api'
+import { useRouter } from 'next/navigation'
 
 const Login: React.FC = () => {
 
@@ -17,23 +19,27 @@ const Login: React.FC = () => {
 
     const [showEmail, setShowEmail] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [message, setMessage] = useState<string | null>(null);
+    
+    const router = useRouter();
 
-    const emailFocusHandler = () => setShowEmail(true);
-    const emailUnfocusHandler = () => setShowEmail(false); 
-    const passwordFocusHandler = () => setShowPassword(true);
-    const passwordUnfocusHandler = () => setShowPassword(false);
-
-    const handleLogin = () => {
+    const handleLogin = async () => {
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
-        // Simulating login process
-        // Redux action -- just a simulation--
-        dispatch(login({
-            id: "1",
-            name: "John doe",
-            email: email || "",
-        }));
-        alert("logged in")
+        if(!email || !password){
+            return setMessage("Enter valid data");
+        }
+        try{
+            const data = await signin(email, password)
+            dispatch(login({
+                id: data.id,
+                name: data.name,
+                email: data.email,
+            }));
+            router.push('/timeline')
+        }catch(error) {
+            setMessage("Login failed");
+        }
         
     }
 
@@ -41,19 +47,20 @@ const Login: React.FC = () => {
     <div className='flex flex-col gap-13 m-4'>
         <BackwardButton/>
         <div className='flex flex-col justify-center items-center gap-1'>
-            <div className='text-5xl font-bold font-sans'>Hello Again! {user.userInfo?.name || ""}</div>
+            <div className='text-5xl font-bold font-sans'>Hello Again!</div>
             <div className='text-gray-500 font-sans'>Sign in to your account</div>
         </div>
         <div className='flex flex-col gap-4'>
-            <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={emailFocusHandler} onBlur={emailUnfocusHandler}>
+            <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={() => setShowEmail(true)} onBlur={() => setShowEmail(false)}>
                 <label htmlFor="email" className={`text-green-500 font-sans ${showEmail ? "flex" : "hidden"}`}>Email address</label>
                 <input type="email" name='email' id='email' placeholder='Enter your email' className='outline-none' ref={emailRef}/>
             </div>
-            <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={passwordFocusHandler} onBlur={passwordUnfocusHandler}>
+            <div className='flex flex-col justify-center h-18 border-1 border-green-500 rounded p-2 gap-1' tabIndex={0} onFocus={() => setShowPassword(true)} onBlur={() => setShowPassword(false)}>
                 <label htmlFor="password" className={`text-green-500 font-sans ${showPassword ? "flex" : "hidden"}`}>Password</label>
                 <input type="password" name='password' id='password' placeholder='Enter your password' className='outline-none' ref={passwordRef}/>
             </div>
             <Link className='text-green-500 underline hover:text-green-600 text-sm' href="">Forgot your password?</Link>
+            {message && <div className='text-red-400'>{message}</div>}
         </div>
         <button className='bg-green-500 text-white p-5 rounded-md text-xl cursor-pointer hover:bg-green-600' onClick={handleLogin}>Sign in</button>
         <div className='relative border-t-1 border-dashed border-gray-500 flex flex-col items-center gap-3'>
